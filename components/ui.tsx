@@ -7,7 +7,7 @@
  */
 import type {
   ButtonHTMLAttributes,
-  InputHTMLAttributes,
+  ComponentPropsWithRef,
   ReactNode,
   SelectHTMLAttributes,
   TextareaHTMLAttributes,
@@ -43,10 +43,14 @@ export function Button({
   );
 }
 
+/**
+ * `ComponentPropsWithRef` rather than `InputHTMLAttributes` so callers can hold
+ * a ref and focus the field — React 19 passes `ref` through as a normal prop.
+ */
 export function TextInput({
   className = "",
   ...props
-}: InputHTMLAttributes<HTMLInputElement>) {
+}: ComponentPropsWithRef<"input">) {
   return <input {...props} className={`${controlBase} ${className}`} />;
 }
 

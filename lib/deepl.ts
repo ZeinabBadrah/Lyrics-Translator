@@ -29,8 +29,12 @@ export const REQUEST_BYTE_BUDGET = 96 * 1024;
  */
 export const MAX_TEXTS_PER_REQUEST = 50;
 
-/** Characters of neighbouring lyrics sent as untranslated context. */
-export const MAX_CONTEXT_CHARS = 1000;
+/**
+ * How much surrounding text to send as context. Context is not billed against
+ * the character quota, but it does count towards the request size, so it is
+ * capped rather than unbounded. A whole song fits comfortably.
+ */
+export const MAX_CONTEXT_CHARS = 5000;
 
 export class DeeplError extends Error {
   readonly status: number;

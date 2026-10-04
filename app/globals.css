@@ -1,22 +1,53 @@
 @import "tailwindcss";
 
+/*
+ * Tailwind v4's `dark:` variant follows the OS setting by default, which cannot
+ * express "the user chose light even though their OS is dark". Redefining the
+ * variant to key off a `.dark` class moves that decision into our hands; the
+ * inline script in the root layout sets the class before first paint.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #18181b;
+  --muted: #6b6b76;
+  --border: #e4e4e7;
+  --surface: #fafafa;
+  --accent: #4f46e5;
+  --accent-foreground: #ffffff;
+  /* Marks words already saved to vocabulary. */
+  --highlight: #fde68a;
+  --highlight-foreground: #422006;
+  --danger: #b91c1c;
+}
+
+.dark {
+  --background: #0a0a0b;
+  --foreground: #f4f4f5;
+  --muted: #a1a1aa;
+  --border: #2a2a2f;
+  --surface: #17171a;
+  --accent: #818cf8;
+  --accent-foreground: #0a0a0b;
+  --highlight: #4a3a12;
+  --highlight-foreground: #fde68a;
+  --danger: #f87171;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-surface: var(--surface);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-highlight: var(--highlight);
+  --color-highlight-foreground: var(--highlight-foreground);
+  --color-danger: var(--danger);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 body {

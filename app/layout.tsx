@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+
+import { NavBar } from "@/components/NavBar";
+import { ThemeManager } from "@/components/ThemeManager";
+import { themeInitScript } from "@/lib/theme";
+
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,8 +28,21 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <head>
+        {/*
+          Runs before the first paint so the page never flashes the wrong
+          theme. It has to be inline and blocking for that to work, which is
+          why it is injected as a string rather than imported as a module.
+        */}
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="flex min-h-full flex-col">
+        <ThemeManager />
+        <NavBar />
+        {children}
+      </body>
     </html>
   );
 }

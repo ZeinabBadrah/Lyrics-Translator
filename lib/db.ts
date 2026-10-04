@@ -18,7 +18,7 @@ const SETTINGS_KEY = "app";
 
 export const DEFAULT_SETTINGS: Settings = {
   deeplApiKey: "",
-  deeplApiPlan: "free",
+  deeplApiPlan: "auto",
   defaultTargetLanguage: "DE",
   theme: "system",
 };

@@ -1,6 +1,13 @@
 /** DeepL offers two API tiers on different hostnames. Free keys end in `:fx`. */
 export type DeeplApiPlan = "free" | "pro";
 
+/**
+ * What the user picks in Settings. "auto" derives the plan from the key's
+ * format, which is right often enough that the explicit choices only exist as
+ * an escape hatch.
+ */
+export type DeeplApiPlanSetting = DeeplApiPlan | "auto";
+
 export type ThemePreference = "system" | "light" | "dark";
 
 /** A single line of lyrics paired with its translation. */
@@ -64,7 +71,52 @@ export type VocabularyItemInput = Omit<
 
 export interface Settings {
   deeplApiKey: string;
-  deeplApiPlan: DeeplApiPlan;
+  deeplApiPlan: DeeplApiPlanSetting;
   defaultTargetLanguage: string;
   theme: ThemePreference;
+}
+
+// ---------------------------------------------------------------------------
+// The contract between the browser and this app's own API routes
+// ---------------------------------------------------------------------------
+
+export interface TranslateRequestBody {
+  /** Lines to translate. Order is preserved in the response. */
+  text: string[];
+  /** DeepL source language code. Omit to let DeepL detect it. */
+  sourceLang?: string;
+  targetLang: string;
+  /**
+   * Surrounding text that improves translation quality without being
+   * translated itself and without counting towards the character quota.
+   */
+  context?: string;
+  apiKey: string;
+  /** Omit to derive the plan from the key's format. */
+  apiPlan?: DeeplApiPlanSetting;
+}
+
+export interface TranslateResponseBody {
+  /** Translations, in the same order as the submitted text. */
+  translations: string[];
+  /** What DeepL detected, when `sourceLang` was not specified. */
+  detectedSourceLanguage?: string;
+}
+
+export interface UsageRequestBody {
+  apiKey: string;
+  apiPlan?: DeeplApiPlanSetting;
+}
+
+export interface UsageResponseBody {
+  characterCount: number;
+  characterLimit: number;
+  /** DeepL reports an absurdly large limit when the account has none. */
+  unlimited: boolean;
+}
+
+export interface ApiErrorBody {
+  error: string;
+  /** DeepL's request identifier, useful when contacting their support. */
+  traceId?: string;
 }

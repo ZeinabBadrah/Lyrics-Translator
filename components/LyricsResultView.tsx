@@ -303,7 +303,13 @@ export function LyricsResultView({ song }: { song: Song }) {
         ))}
       </div>
 
-      <footer className="border-t border-border pt-6">
+      <footer className="flex flex-wrap gap-x-4 gap-y-2 border-t border-border pt-6">
+        <Link
+          href="/songs"
+          className="text-sm text-accent underline underline-offset-2"
+        >
+          My songs
+        </Link>
         <Link
           href="/"
           className="text-sm text-accent underline underline-offset-2"

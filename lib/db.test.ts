@@ -14,6 +14,7 @@ import {
   getSongByTitle,
   getVocabularyBySong,
   getVocabularyByText,
+  getVocabularyCountsBySong,
   getVocabularyTextSet,
   saveSettings,
   saveSong,
@@ -357,6 +358,65 @@ describe("vocabulary", () => {
     await deleteVocabularyItem(item.id);
 
     await expect(getAllVocabulary()).resolves.toEqual([]);
+  });
+});
+
+describe("getVocabularyCountsBySong", () => {
+  async function add(songId: string | undefined, text: string) {
+    await addVocabularyItem({
+      text,
+      translatedText: "irrelevant",
+      sourceLanguage: "EN",
+      targetLanguage: "DE",
+      ...(songId ? { songId } : {}),
+    });
+  }
+
+  it("is empty when nothing has been collected", async () => {
+    await expect(getVocabularyCountsBySong()).resolves.toEqual(new Map());
+  });
+
+  it("counts the items belonging to each song", async () => {
+    await add("song-a", "one");
+    await add("song-a", "two");
+    await add("song-b", "three");
+
+    const counts = await getVocabularyCountsBySong();
+
+    expect(counts.get("song-a")).toBe(2);
+    expect(counts.get("song-b")).toBe(1);
+  });
+
+  it("omits songs with nothing collected rather than storing a zero", async () => {
+    await add("song-a", "one");
+
+    const counts = await getVocabularyCountsBySong();
+
+    expect(counts.has("song-b")).toBe(false);
+    expect(counts.get("song-b")).toBeUndefined();
+  });
+
+  it("ignores items that came from no song", async () => {
+    await add(undefined, "orphan");
+    await add("song-a", "one");
+
+    const counts = await getVocabularyCountsBySong();
+
+    expect(counts.size).toBe(1);
+    expect(counts.get("song-a")).toBe(1);
+  });
+
+  it("still counts words whose song has been deleted", async () => {
+    // The count outlives the song, which is what lets the library explain that
+    // deleting a song keeps its vocabulary.
+    const saved = await saveSong(songFixture);
+    await add(saved.id, "one");
+
+    await deleteSong(saved.id);
+
+    await expect(getVocabularyCountsBySong()).resolves.toEqual(
+      new Map([[saved.id, 1]]),
+    );
   });
 });
 

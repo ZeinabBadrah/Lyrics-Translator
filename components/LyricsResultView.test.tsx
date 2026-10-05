@@ -239,6 +239,15 @@ describe("LyricsResultView", () => {
     expect(word("nothing")).toHaveAttribute("aria-pressed", "true");
   });
 
+  it("links back to the song library", () => {
+    render(<LyricsResultView song={song} />);
+
+    expect(screen.getByRole("link", { name: "My songs" })).toHaveAttribute(
+      "href",
+      "/songs",
+    );
+  });
+
   it("clears the selection on Escape", async () => {
     render(<LyricsResultView song={song} />);
 

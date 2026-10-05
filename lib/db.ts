@@ -304,6 +304,26 @@ export async function getVocabularyBySong(
   return items.sort((a, b) => b.createdAt - a.createdAt);
 }
 
+/**
+ * How many words were collected from each song, keyed by song id.
+ *
+ * One pass over the store rather than a query per song, so showing counts for a
+ * whole library costs a single read. Songs with nothing collected are simply
+ * absent from the map.
+ */
+export async function getVocabularyCountsBySong(): Promise<Map<string, number>> {
+  const db = await getDb();
+  const counts = new Map<string, number>();
+
+  for (const item of await db.getAll("vocabulary")) {
+    if (item.songId) {
+      counts.set(item.songId, (counts.get(item.songId) ?? 0) + 1);
+    }
+  }
+
+  return counts;
+}
+
 // ---------------------------------------------------------------------------
 // Settings
 // ---------------------------------------------------------------------------

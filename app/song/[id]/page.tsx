@@ -63,12 +63,20 @@ export default function SongPage({ params }: PageProps<"/song/[id]">) {
             in a different browser — songs live on the device that translated
             them.
           </Alert>
-          <Link
-            href="/"
-            className="text-sm text-accent underline underline-offset-2"
-          >
-            Translate a song
-          </Link>
+          <div className="flex flex-wrap gap-x-4 gap-y-2">
+            <Link
+              href="/songs"
+              className="text-sm text-accent underline underline-offset-2"
+            >
+              My songs
+            </Link>
+            <Link
+              href="/"
+              className="text-sm text-accent underline underline-offset-2"
+            >
+              Translate a song
+            </Link>
+          </div>
         </div>
       )}
 

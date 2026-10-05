@@ -10,6 +10,8 @@ import {
   updateVocabularyItem,
 } from "@/lib/db";
 import { Alert, Button, Field, TextInput } from "@/components/ui";
+import Link from "next/link";
+
 import type { Song, VocabularyItem } from "@/types";
 
 export interface VocabularyPopoverProps {
@@ -206,13 +208,21 @@ export function VocabularyPopover({
           />
         </Field>
 
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={onClose} disabled={saving}>
-            Cancel
-          </Button>
-          <Button onClick={() => void save()} disabled={loading || saving}>
-            {saving ? "Saving…" : existing ? "Update" : "Save"}
-          </Button>
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href="/vocabulary"
+            className="text-xs text-muted underline underline-offset-2"
+          >
+            View vocabulary
+          </Link>
+          <div className="flex gap-2">
+            <Button variant="secondary" onClick={onClose} disabled={saving}>
+              Cancel
+            </Button>
+            <Button onClick={() => void save()} disabled={loading || saving}>
+              {saving ? "Saving…" : existing ? "Update" : "Save"}
+            </Button>
+          </div>
         </div>
       </div>
     </div>
